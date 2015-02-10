@@ -21,7 +21,7 @@ public func future<T>(executionContext context: ExecutionContext = DefaultFuture
 	return promise.future
 }
 
-public func future<T: Any>(executionContext context: ExecutionContext = DefaultFutureExecutionContext(), action: @autoclosure ()->(T)) -> Future<T> {
+public func future<T: Any>(executionContext context: ExecutionContext = DefaultFutureExecutionContext(), action: ()->(T)) -> Future<T> {
 	return future(executionContext: DefaultFutureExecutionContext(), { return Success(action()) })
 }
 
@@ -61,9 +61,9 @@ public class Future<T: Any> {
 	
 	public func value() -> T? { return result?.value }
 	
-	public func onSuccess(callback:(T)->()) { self.onSuccess(executionContext: MainExecutionContext(), callback) }
+	public func onSuccess(callback:(T)->()) { self.onSuccess(executionContext: MainExecutionContext(), callback: callback) }
 	
-	public func onFailure(callback:(NSError)->()) { self.onFailure(executionContext: MainExecutionContext(), callback) }
+	public func onFailure(callback:(NSError)->()) { self.onFailure(executionContext: MainExecutionContext(), callback: callback) }
 	
 	public func onSuccess(#executionContext: ExecutionContext, callback:(T)->()) {
 		let successCallback = FutureCallback(callback: callback, executionContext: executionContext)
