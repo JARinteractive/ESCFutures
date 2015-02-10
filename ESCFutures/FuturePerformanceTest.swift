@@ -15,7 +15,8 @@ class FuturePerformanceTest: XCTestCase {
 				}
 			}
 
-			XCTAssert(waitUntil(60.0) { return completionCount == 1000 })
+			let success = waitUntil(60.0) { return completionCount == 1000 }
+			XCTAssert(success)
         }
     }
 }

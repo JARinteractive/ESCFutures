@@ -61,7 +61,7 @@ class FutureTest:XCTestCase {
 			actualResult = result
 		}
 		
-		XCTAssert(waitUntil { actualResult != nil })
+		waitUntil { actualResult != nil }
 		XCTAssertEqual(actualResult!, 42);
 	}
 	
@@ -78,7 +78,7 @@ class FutureTest:XCTestCase {
 			actualError = error;
 		}
 		
-		XCTAssert(waitUntil { actualError != nil })
+		waitUntil { actualError != nil }
 		XCTAssertEqual(actualError!, error)
 	}
 	
@@ -94,7 +94,7 @@ class FutureTest:XCTestCase {
 		testObject.onSuccess { result in
 			actualResult = result
 		}
-		XCTAssert(waitUntil { actualResult != nil })
+		waitUntil { actualResult != nil }
 		XCTAssertEqual(actualResult!, 42);
 	}
 	
@@ -112,7 +112,7 @@ class FutureTest:XCTestCase {
 		testObject.onFailure { error in
 			actualError = error;
 		}
-		XCTAssert(waitUntil { actualError != nil })
+		waitUntil { actualError != nil }
 		XCTAssertEqual(actualError!, error)
 	}
 	
