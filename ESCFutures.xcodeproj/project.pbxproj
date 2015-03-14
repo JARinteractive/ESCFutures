@@ -22,7 +22,6 @@
 		4DCE5D45198193EF00AD6793 /* PromiseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCE5D431981938600AD6793 /* PromiseTest.swift */; };
 		4DEA220F195E80DC0063B2CE /* ESCFutures.h in Headers */ = {isa = PBXBuildFile; fileRef = 4DEA220E195E80DC0063B2CE /* ESCFutures.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4DEA2215195E80DC0063B2CE /* ESCFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DEA2209195E80DC0063B2CE /* ESCFutures.framework */; };
-		4DEA221C195E80DC0063B2CE /* ESCFuturesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DEA221B195E80DC0063B2CE /* ESCFuturesTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,7 +49,6 @@
 		4DEA220E195E80DC0063B2CE /* ESCFutures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESCFutures.h; sourceTree = "<group>"; };
 		4DEA2214195E80DC0063B2CE /* ESCFuturesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ESCFuturesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DEA221A195E80DC0063B2CE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4DEA221B195E80DC0063B2CE /* ESCFuturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ESCFuturesTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,7 +117,6 @@
 		4DEA2218195E80DC0063B2CE /* ESCFuturesTests */ = {
 			isa = PBXGroup;
 			children = (
-				4DEA221B195E80DC0063B2CE /* ESCFuturesTests.swift */,
 				4DEA2219195E80DC0063B2CE /* Supporting Files */,
 			);
 			path = ESCFuturesTests;
@@ -259,7 +256,6 @@
 			files = (
 				4D3ED5411977578400484F08 /* FutureTest.swift in Sources */,
 				4DCE5D45198193EF00AD6793 /* PromiseTest.swift in Sources */,
-				4DEA221C195E80DC0063B2CE /* ESCFuturesTests.swift in Sources */,
 				4D3ED5421977578400484F08 /* FutureChainingTest.swift in Sources */,
 				4D3ED5431977578400484F08 /* FuturePerformanceTest.swift in Sources */,
 			);
@@ -377,6 +373,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = YES;
 			};
 			name = Debug;
 		};
@@ -395,6 +392,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = YES;
 			};
 			name = Release;
 		};

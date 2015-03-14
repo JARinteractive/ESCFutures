@@ -2,7 +2,7 @@ import XCTest
 import ESCFutures
 
 class FuturePerformanceTest: XCTestCase {
-	func testPerformanceExample() {
+	func testFuturePerformance() {
 		self.measureBlock() {
 			var completionCount = 0
 			for futureCount in 0..<1000 {
@@ -11,12 +11,13 @@ class FuturePerformanceTest: XCTestCase {
 				}
 				
 				aFuture.onSuccess { result in
-					completionCount = completionCount + result
+					completionCount++;
+					//completionCount = completionCount + result //can result in same number twice under high load
 				}
 			}
 
-			let success = waitUntil(60.0) { return completionCount == 1000 }
-			XCTAssert(success)
+			let success = waitUntil(60.0) {completionCount == 1000}
+			XCTAssertTrue(success)
         }
     }
 }
