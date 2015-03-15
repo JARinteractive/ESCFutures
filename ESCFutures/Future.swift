@@ -1,22 +1,17 @@
 import Foundation
 
 public func Success<T>(value: T) -> PromiseResult<T> {
-	return PromiseResult(value: value, error: nil);
+	return .success(Box(value))
 }
 
 public func Failure<T>(error: NSError) -> PromiseResult<T> {
-	return PromiseResult(value: nil, error: error);
+	return .failure(error)
 }
 
 public func future<T>(executionContext context: ExecutionContext = DefaultFutureExecutionContext(), action: ()->PromiseResult<T>) -> Future<T> {
 	let promise = Promise<T>();
 	context.run {
-		let result = action()
-		if let value = result.value {
-			promise.success(value)
-		} else if let error = result.error {
-			promise.failure(error);
-		}
+		promise.complete(action())
 	}
 	return promise.future
 }
@@ -28,13 +23,13 @@ public func future<T: Any>(executionContext context: ExecutionContext = DefaultF
 public class Future<T: Any> {
 	private var successCallbacks:[FutureCallback<T>] = []
 	private var failureCallbacks:[FutureCallback<NSError>] = []
-	private var result:(value: T?, error: NSError?)?
+	private var result:PromiseResult<T>?
 	private let sync = Synchronizer()
 	
 	init() {}
 	
 	func complete(promiseResult: PromiseResult<T>) {
-		result = (promiseResult.value, promiseResult.error)
+		result = promiseResult
 		self.maybeRunCallbacks()
 	}
 	
@@ -42,12 +37,7 @@ public class Future<T: Any> {
 		let promise = Promise<U>();
 		
 		self.onSuccess(executionContext: context) { thisResult in
-			let result = action(thisResult)
-			if let value = result.value {
-				promise.success(value)
-			} else if let error = result.error {
-				promise.failure(error)
-			}
+			promise.complete(action(thisResult))
 		}
 		
 		return promise.future
@@ -57,9 +47,20 @@ public class Future<T: Any> {
 		return collect(executionContext: context, action: { thisResult in return Success(action(thisResult)) } )
 	}
 	
-	public func isComplete() -> Bool { return result != nil ? true : false }
+	public func isComplete() -> Bool { return result != nil }
 	
-	public func value() -> T? { return result?.value }
+	public func value() -> T? {
+		var value:T? = nil
+		if let result = result {
+			switch result {
+			case .success(let result):
+				value = result.value
+			default:
+				value = nil
+			}
+		}
+		return value
+	}
 	
 	public func onSuccess(callback:(T)->()) { self.onSuccess(executionContext: MainExecutionContext(), callback: callback) }
 	
@@ -82,12 +83,13 @@ public class Future<T: Any> {
 	}
 	
 	private func maybeRunCallbacks() {
-		if let futureResult = result {
+		if let result = result {
 			let callbacks = clearAndReturnCallbacks()
-			if let error = futureResult.error {
-				RunFutureCallbacks(callbacks.failureCallbacks, error)
-			} else if let value = futureResult.value {
-				RunFutureCallbacks(callbacks.successCallbacks, value)
+			switch result {
+			case .success(let sucessfulResult):
+			RunFutureCallbacks(callbacks.successCallbacks, sucessfulResult.value)
+			case .failure(let error):
+			RunFutureCallbacks(callbacks.failureCallbacks, error)
 			}
 		}
 	}

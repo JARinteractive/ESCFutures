@@ -6,32 +6,38 @@
 //  Copyright (c) 2014 Escappe. All rights reserved.
 //
 
-public struct PromiseResult<T> {
-	var value:T?
-	var error:NSError?
+public class Box<T> {
+	public let value:T
+	init(_ theValue:T) {
+		value = theValue
+	}
+}
+
+public enum PromiseResult<T> {
+	case success(Box<T>)
+	case failure(NSError)
 }
 
 public class Promise<T> {
-	var promiseResult: PromiseResult<T>? = nil
+	public private(set) var result: PromiseResult<T>? = nil
 	public let future: Future<T> = Future()
 	
-	public var value: T? { get { return promiseResult?.value } }
-	public var error: NSError? { get { return promiseResult?.error } }
+//	public var value: T? { get { return promiseResult? == .success ? promiseResult. } }
+//	public var error: NSError? { get { return promiseResult?.error } }
 	
 	public init() {}
 	
 	public func success(value: T) {
-		if (promiseResult == nil) {
-			let result = PromiseResult(value: value, error: nil)
-			promiseResult = result
-			future.complete(result)
-		}
+		self.complete(.success(Box(value)))
 	}
 	
 	public func failure(error: NSError) {
-		if (promiseResult == nil) {
-			let result = PromiseResult<T>(value: nil, error: error)
-			promiseResult = result
+		self.complete(.failure(error))
+	}
+	
+	public func complete(result: PromiseResult<T>) {
+		if (self.result == nil) {
+			self.result = result
 			future.complete(result)
 		}
 	}

@@ -9,24 +9,48 @@
 import XCTest
 import ESCFutures
 
+func promiseResultValue<T>(result:PromiseResult<T>?) -> T? {
+	let (value, _) = promiseResultTuple(result)
+	return value
+}
+
+func promiseResultError<T>(result:PromiseResult<T>?) -> NSError? {
+	let (_, error) = promiseResultTuple(result)
+	return error
+}
+
+func promiseResultTuple<T>(result:PromiseResult<T>?) -> (T?, NSError?) {
+	var promiseValue:T? = nil
+	var promiseError:NSError? = nil
+	if let result = result {
+		switch result {
+		case .success(let value):
+			promiseValue = value.value
+		case .failure(let error):
+			promiseError = error
+		}
+	}
+	return (promiseValue, promiseError)
+}
+
 class PromiseTest : XCTestCase {
 	func testPromiseHasValueWhenSuccessIsCalled() {
 		let testObject = Promise<String>()
-		XCTAssertNil(testObject.value)
+		XCTAssertTrue(testObject.result == nil)
 		
 		testObject.success("Hello World")
 		
-		XCTAssertEqual(testObject.value!, "Hello World")
+		XCTAssertEqual(promiseResultValue(testObject.result)!, "Hello World")
 	}
 	
 	func testPromiseHasInitialValueWhenSuccessIsCalled() {
 		let testObject = Promise<String>()
-		XCTAssertNil(testObject.value)
+		XCTAssertTrue(testObject.result == nil)
 		
 		testObject.success("Hello World")
 		testObject.success("Hello Other World")
 		
-		XCTAssertEqual(testObject.value!, "Hello World")
+		XCTAssertEqual(promiseResultValue(testObject.result)!, "Hello World")
 	}
 	
 	func testPromiseHasErrorWhenFailureIsCalled() {
@@ -35,8 +59,7 @@ class PromiseTest : XCTestCase {
 		
 		testObject.failure(error);
 		
-		XCTAssertNil(testObject.value)
-		XCTAssertEqual(testObject.error!, error)
+		XCTAssertEqual(promiseResultError(testObject.result)!, error)
 	}
 	
 	func testPromiseHasInitialErrorWhenFailureIsCalled() {
@@ -47,8 +70,7 @@ class PromiseTest : XCTestCase {
 		testObject.failure(error1);
 		testObject.failure(error2);
 		
-		XCTAssertNil(testObject.value)
-		XCTAssertEqual(testObject.error!, error1)
+		XCTAssertEqual(promiseResultError(testObject.result)!, error1)
 	}
 	
 	func testPromiseHasInitialErrorWhenFailureThenSuccessIsCalled() {
@@ -58,18 +80,16 @@ class PromiseTest : XCTestCase {
 		testObject.failure(error);
 		testObject.success("33");
 		
-		XCTAssertNil(testObject.value)
-		XCTAssertEqual(testObject.error!, error)
+		XCTAssertEqual(promiseResultError(testObject.result)!, error)
 	}
 	
-	func testPromiseHasInitialValueWhenSuccessTHenFailureIsCalled() {
+	func testPromiseHasInitialValueWhenSuccessThenFailureIsCalled() {
 		let error = NSError(domain: "1", code: 1, userInfo: nil)
 		let testObject = Promise<String>()
 		
 		testObject.success("33");
 		testObject.failure(error);
 		
-		XCTAssertEqual(testObject.value!, "33")
-		XCTAssertNil(testObject.error)
+		XCTAssertEqual(promiseResultValue(testObject.result)!, "33")
 	}
 }
