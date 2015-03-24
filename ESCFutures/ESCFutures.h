@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Escappe. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for ESCFutures.
 FOUNDATION_EXPORT double ESCFuturesVersionNumber;

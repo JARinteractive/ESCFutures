@@ -24,6 +24,13 @@ public struct NSOperationQueueExecutionContext : ExecutionContext {
 	}
 }
 
+public struct ImmediateExecutionContext : ExecutionContext {
+	public init() {}
+	public func run(action:()->()) {
+		action()
+	}
+}
+
 public func BackgroundExecutionContext() -> ExecutionContext {
 	return GCDExecutionContext(dispatchQueue: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
 }
